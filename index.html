@@ -1183,11 +1183,17 @@ footer a:hover{text-decoration:underline}
 ────────────────────────────────────────── */
 'use strict';
 
-/* ── Import shared lib ── */
+/* ── Safe lib import ── */
+if (!window.EcoTraceLib) {
+  document.body.insertAdjacentHTML('afterbegin',
+    '<div role="alert" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:#EA4335;color:#fff;padding:1rem 1.5rem;font-family:sans-serif;font-size:.9rem">'
+    + '⚠️ Could not load calculation library (lib/emissions.js). Please open this file via a local server or directly from the project folder.'
+    + '</div>');
+}
 const {
   r2, clamp, escHtml,
   calcTransport, calcEnergy, calcFood, calcShopping, getBadge
-} = window.EcoTraceLib;
+} = window.EcoTraceLib || {};
 
 /* ── State ── */
 const STEPS = ['transport', 'energy', 'food', 'shopping'];
@@ -1733,14 +1739,16 @@ function downloadReport() {
       }
       requestAnimationFrame(draw);
     }
-    window.addEventListener('resize', () => { resize(); });
+    window.addEventListener('resize', resize);
     init();
-    // Respect prefers-reduced-motion
+    /* Respect prefers-reduced-motion */
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       requestAnimationFrame(draw);
     }
   }());
-document.addEventListener('DOMContentLoaded', () => {
+
+/* ── Wire all event listeners (DOM is ready — script is at end of body) ── */
+(function wireListeners() {
   /* Range display updates */
   const rangeMap = [
     ['car_km',      'car_km_v',      'km / week'],
@@ -1752,35 +1760,34 @@ document.addEventListener('DOMContentLoaded', () => {
     ['electronics', 'electronics_v', 'devices']
   ];
   rangeMap.forEach(([id, dispId, unit]) => {
-    const el = $(id);
-    if (el) {
-      el.addEventListener('input', () => rng(id, dispId, unit));
-      rng(id, dispId, unit); /* set initial display */
-    }
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => rng(id, dispId, unit));
+    rng(id, dispId, unit);
   });
 
-  /* Step navigation buttons — no inline onclick */
+  /* Button click handlers */
   const navMap = [
-    ['tab-transport',    () => goStep('transport')],
-    ['tab-energy',       () => goStep('energy')],
-    ['tab-food',         () => goStep('food')],
-    ['tab-shopping',     () => goStep('shopping')],
-    ['btn-next-energy',  () => goStep('energy')],
+    ['tab-transport',      () => goStep('transport')],
+    ['tab-energy',         () => goStep('energy')],
+    ['tab-food',           () => goStep('food')],
+    ['tab-shopping',       () => goStep('shopping')],
+    ['btn-next-energy',    () => goStep('energy')],
     ['btn-back-transport', () => goStep('transport')],
-    ['btn-next-food',    () => goStep('food')],
-    ['btn-back-energy',  () => goStep('energy')],
-    ['btn-next-shopping', () => goStep('shopping')],
-    ['btn-back-food',    () => goStep('food')],
-    ['calc-btn',         () => calculate()],
-    ['regen-btn',        () => getAITips()],
-    ['share-btn',        () => shareResult()],
-    ['download-btn',     () => downloadReport()]
+    ['btn-next-food',      () => goStep('food')],
+    ['btn-back-energy',    () => goStep('energy')],
+    ['btn-next-shopping',  () => goStep('shopping')],
+    ['btn-back-food',      () => goStep('food')],
+    ['calc-btn',           () => calculate()],
+    ['regen-btn',          () => getAITips()],
+    ['share-btn',          () => shareResult()],
+    ['download-btn',       () => downloadReport()]
   ];
   navMap.forEach(([id, handler]) => {
-    const el = $(id);
+    const el = document.getElementById(id);
     if (el) el.addEventListener('click', handler);
   });
-});
+}());
 </script>
 </body>
 </html>
