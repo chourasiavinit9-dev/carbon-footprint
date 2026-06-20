@@ -20,7 +20,9 @@
   <!-- Shared calculation engine — must load before main script -->
   <script src="lib/emissions.js"></script>
   <!-- Chart.js deferred — only needed after calculate() -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
+    integrity="sha512-CQBWl4fJHWbryGE+Pc7UAxWMUMNMWzWxF4SQo9CgkJIN1kx6djDQZjh3Y8SZ1d+6I+1zze6Z7kHXO7q3UyZAWw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
 
 <style>
 /* ═══════════════════════════════════════════
@@ -660,26 +662,22 @@ footer a:hover{text-decoration:underline}
   <nav aria-label="Calculator steps">
     <div class="step-rail" role="tablist" aria-label="Calculator sections">
       <button class="step-rail-item active" id="tab-transport" role="tab"
-        aria-selected="true" aria-controls="panel-transport"
-        onclick="goStep('transport')">
+        aria-selected="true" aria-controls="panel-transport">
         <span class="step-icon" aria-hidden="true">🚗</span>
         <span class="step-label">Transport</span>
       </button>
       <button class="step-rail-item" id="tab-energy" role="tab"
-        aria-selected="false" aria-controls="panel-energy"
-        onclick="goStep('energy')">
+        aria-selected="false" aria-controls="panel-energy">
         <span class="step-icon" aria-hidden="true">⚡</span>
         <span class="step-label">Energy</span>
       </button>
       <button class="step-rail-item" id="tab-food" role="tab"
-        aria-selected="false" aria-controls="panel-food"
-        onclick="goStep('food')">
+        aria-selected="false" aria-controls="panel-food">
         <span class="step-icon" aria-hidden="true">🥦</span>
         <span class="step-label">Food</span>
       </button>
       <button class="step-rail-item" id="tab-shopping" role="tab"
-        aria-selected="false" aria-controls="panel-shopping"
-        onclick="goStep('shopping')">
+        aria-selected="false" aria-controls="panel-shopping">
         <span class="step-icon" aria-hidden="true">🛍️</span>
         <span class="step-label">Shopping</span>
       </button>
@@ -698,7 +696,7 @@ footer a:hover{text-decoration:underline}
           <label for="car_km">🚘 Weekly car distance</label>
           <div class="range-row">
             <input type="range" id="car_km" min="0" max="1000" value="150" step="10"
-              oninput="rng('car_km','car_km_v','km / week')"
+              aria-label="Weekly car distance in kilometres"
               aria-valuemin="0" aria-valuemax="1000" aria-valuenow="150"
               aria-describedby="car_km_hint"/>
             <span class="range-val" id="car_km_v" aria-live="polite">150 km / week</span>
@@ -708,7 +706,7 @@ footer a:hover{text-decoration:underline}
         <div class="field">
           <label for="car_type">⛽ Vehicle type</label>
           <div class="sel-wrap">
-            <select id="car_type" aria-describedby="car_type_hint">
+            <select id="car_type" aria-label="Vehicle type" aria-describedby="car_type_hint">
               <option value="petrol">Petrol / Gasoline</option>
               <option value="diesel">Diesel</option>
               <option value="hybrid">Hybrid</option>
@@ -722,7 +720,7 @@ footer a:hover{text-decoration:underline}
           <label for="fl_short">✈️ Short-haul flights / year</label>
           <div class="range-row">
             <input type="range" id="fl_short" min="0" max="20" value="2" step="1"
-              oninput="rng('fl_short','fl_short_v','flights')"
+              aria-label="Number of short-haul flights per year"
               aria-valuemin="0" aria-valuemax="20" aria-valuenow="2"
               aria-describedby="fl_short_hint"/>
             <span class="range-val" id="fl_short_v" aria-live="polite">2 flights</span>
@@ -733,7 +731,7 @@ footer a:hover{text-decoration:underline}
           <label for="fl_long">🌍 Long-haul flights / year</label>
           <div class="range-row">
             <input type="range" id="fl_long" min="0" max="10" value="1" step="1"
-              oninput="rng('fl_long','fl_long_v','flights')"
+              aria-label="Number of long-haul flights per year"
               aria-valuemin="0" aria-valuemax="10" aria-valuenow="1"
               aria-describedby="fl_long_hint"/>
             <span class="range-val" id="fl_long_v" aria-live="polite">1 flights</span>
@@ -743,7 +741,7 @@ footer a:hover{text-decoration:underline}
         <div class="field">
           <label for="pub_trans">🚌 Public transport use</label>
           <div class="sel-wrap">
-            <select id="pub_trans" aria-describedby="pub_trans_hint">
+            <select id="pub_trans" aria-label="Public transport frequency" aria-describedby="pub_trans_hint">
               <option value="never">Never</option>
               <option value="occasional">Occasionally</option>
               <option value="regular" selected>Regularly</option>
@@ -754,7 +752,7 @@ footer a:hover{text-decoration:underline}
         </div>
       </div>
       <div class="panel-footer">
-        <button class="btn btn-primary" onclick="goStep('energy')" aria-label="Next: Energy step">Energy →</button>
+        <button class="btn btn-primary" id="btn-next-energy" aria-label="Next: Energy step">Energy →</button>
       </div>
     </div>
   </div>
@@ -771,7 +769,7 @@ footer a:hover{text-decoration:underline}
           <label for="elec_kwh">💡 Monthly electricity (kWh)</label>
           <div class="range-row">
             <input type="range" id="elec_kwh" min="0" max="1000" value="250" step="10"
-              oninput="rng('elec_kwh','elec_kwh_v','kWh')"
+              aria-label="Monthly electricity consumption in kilowatt-hours"
               aria-valuemin="0" aria-valuemax="1000" aria-valuenow="250"
               aria-describedby="elec_hint"/>
             <span class="range-val" id="elec_kwh_v" aria-live="polite">250 kWh</span>
@@ -781,7 +779,7 @@ footer a:hover{text-decoration:underline}
         <div class="field">
           <label for="energy_src">🔋 Energy source</label>
           <div class="sel-wrap">
-            <select id="energy_src">
+            <select id="energy_src" aria-label="Primary energy source for electricity">
               <option value="coal">Coal / High-carbon grid</option>
               <option value="mixed" selected>Mixed / Average grid</option>
               <option value="gas">Natural gas</option>
@@ -792,7 +790,7 @@ footer a:hover{text-decoration:underline}
         <div class="field">
           <label for="heating">🔥 Home heating</label>
           <div class="sel-wrap">
-            <select id="heating">
+            <select id="heating" aria-label="Home heating system type">
               <option value="gas">Gas boiler</option>
               <option value="oil">Oil heating</option>
               <option value="electric" selected>Electric</option>
@@ -805,7 +803,7 @@ footer a:hover{text-decoration:underline}
           <label for="hh_size">👥 Household size</label>
           <div class="range-row">
             <input type="range" id="hh_size" min="1" max="8" value="3" step="1"
-              oninput="rng('hh_size','hh_size_v','people')"
+              aria-label="Number of people in household"
               aria-valuemin="1" aria-valuemax="8" aria-valuenow="3"
               aria-describedby="hh_hint"/>
             <span class="range-val" id="hh_size_v" aria-live="polite">3 people</span>
@@ -815,7 +813,7 @@ footer a:hover{text-decoration:underline}
         <div class="field">
           <label for="solar">☀️ Solar panels?</label>
           <div class="sel-wrap">
-            <select id="solar">
+            <select id="solar" aria-label="Solar panel coverage">
               <option value="no" selected>No solar panels</option>
               <option value="partial">Partial coverage</option>
               <option value="full">Full coverage</option>
@@ -824,8 +822,8 @@ footer a:hover{text-decoration:underline}
         </div>
       </div>
       <div class="panel-footer">
-        <button class="btn btn-ghost" onclick="goStep('transport')" aria-label="Back to Transport">← Back</button>
-        <button class="btn btn-primary" onclick="goStep('food')" aria-label="Next: Food step">Food →</button>
+        <button class="btn btn-ghost" id="btn-back-transport" aria-label="Back to Transport">← Back</button>
+        <button class="btn btn-primary" id="btn-next-food" aria-label="Next: Food step">Food →</button>
       </div>
     </div>
   </div>
@@ -841,7 +839,7 @@ footer a:hover{text-decoration:underline}
         <div class="field">
           <label for="diet">🍽️ Diet type</label>
           <div class="sel-wrap">
-            <select id="diet">
+            <select id="diet" aria-label="Diet type">
               <option value="meat_heavy">Heavy meat eater</option>
               <option value="meat_avg" selected>Average meat eater</option>
               <option value="low_meat">Low meat</option>
@@ -854,7 +852,7 @@ footer a:hover{text-decoration:underline}
         <div class="field">
           <label for="waste">🗑️ Food waste</label>
           <div class="sel-wrap">
-            <select id="waste">
+            <select id="waste" aria-label="Food waste level">
               <option value="high">High — throw away often</option>
               <option value="medium" selected>Medium — some waste</option>
               <option value="low">Low — minimal waste</option>
@@ -865,7 +863,7 @@ footer a:hover{text-decoration:underline}
         <div class="field">
           <label for="local">🏘️ Local / seasonal food</label>
           <div class="sel-wrap">
-            <select id="local">
+            <select id="local" aria-label="Local and seasonal food frequency">
               <option value="never">Rarely buy local</option>
               <option value="sometimes" selected>Sometimes</option>
               <option value="often">Often</option>
@@ -876,7 +874,7 @@ footer a:hover{text-decoration:underline}
         <div class="field">
           <label for="dairy">🥛 Dairy intake</label>
           <div class="sel-wrap">
-            <select id="dairy">
+            <select id="dairy" aria-label="Dairy intake level">
               <option value="high">High</option>
               <option value="medium" selected>Medium</option>
               <option value="low">Low</option>
@@ -886,8 +884,8 @@ footer a:hover{text-decoration:underline}
         </div>
       </div>
       <div class="panel-footer">
-        <button class="btn btn-ghost" onclick="goStep('energy')" aria-label="Back to Energy">← Back</button>
-        <button class="btn btn-primary" onclick="goStep('shopping')" aria-label="Next: Shopping step">Shopping →</button>
+        <button class="btn btn-ghost" id="btn-back-energy" aria-label="Back to Energy">← Back</button>
+        <button class="btn btn-primary" id="btn-next-shopping" aria-label="Next: Shopping step">Shopping →</button>
       </div>
     </div>
   </div>
@@ -904,7 +902,7 @@ footer a:hover{text-decoration:underline}
           <label for="clothes">👕 New clothing items / month</label>
           <div class="range-row">
             <input type="range" id="clothes" min="0" max="20" value="3" step="1"
-              oninput="rng('clothes','clothes_v','items')"
+              aria-label="New clothing items purchased per month"
               aria-valuemin="0" aria-valuemax="20" aria-valuenow="3"/>
             <span class="range-val" id="clothes_v" aria-live="polite">3 items</span>
           </div>
@@ -913,7 +911,7 @@ footer a:hover{text-decoration:underline}
           <label for="electronics">📱 New electronics / year</label>
           <div class="range-row">
             <input type="range" id="electronics" min="0" max="10" value="2" step="1"
-              oninput="rng('electronics','electronics_v','devices')"
+              aria-label="New electronic devices purchased per year"
               aria-valuemin="0" aria-valuemax="10" aria-valuenow="2"/>
             <span class="range-val" id="electronics_v" aria-live="polite">2 devices</span>
           </div>
@@ -921,7 +919,7 @@ footer a:hover{text-decoration:underline}
         <div class="field">
           <label for="recycling">♻️ Recycling habit</label>
           <div class="sel-wrap">
-            <select id="recycling">
+            <select id="recycling" aria-label="Recycling habit frequency">
               <option value="never">Never recycle</option>
               <option value="sometimes">Sometimes</option>
               <option value="often" selected>Often</option>
@@ -932,7 +930,7 @@ footer a:hover{text-decoration:underline}
         <div class="field">
           <label for="secondhand">🔄 Second-hand shopping</label>
           <div class="sel-wrap">
-            <select id="secondhand">
+            <select id="secondhand" aria-label="Second-hand shopping frequency">
               <option value="never">Never</option>
               <option value="sometimes" selected>Sometimes</option>
               <option value="often">Often</option>
@@ -942,8 +940,8 @@ footer a:hover{text-decoration:underline}
         </div>
       </div>
       <div class="panel-footer">
-        <button class="btn btn-ghost" onclick="goStep('food')" aria-label="Back to Food">← Back</button>
-        <button class="btn btn-primary" id="calc-btn" onclick="calculate()" aria-label="Calculate my carbon footprint">
+        <button class="btn btn-ghost" id="btn-back-food" aria-label="Back to Food">← Back</button>
+        <button class="btn btn-primary" id="calc-btn" aria-label="Calculate my carbon footprint">
           Calculate footprint
         </button>
       </div>
@@ -1054,7 +1052,7 @@ footer a:hover{text-decoration:underline}
           </p>
           <div style="display:flex;align-items:center;gap:.6rem">
             <span style="font-family:var(--ff-m);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3);border:1px solid var(--ink-3);padding:.25rem .6rem;border-radius:100px">Gemini AI</span>
-            <button class="btn btn-ghost btn-sm" id="regen-btn" onclick="getAITips()" aria-label="Regenerate AI tips">↺ Regenerate</button>
+            <button class="btn btn-ghost btn-sm" id="regen-btn" aria-label="Regenerate AI tips">↺ Regenerate</button>
           </div>
         </div>
         <div id="tips-body" aria-live="polite" aria-label="Personalised reduction tips">
@@ -1067,10 +1065,10 @@ footer a:hover{text-decoration:underline}
         <h2 id="pledge-title">Make the commitment</h2>
         <p>Share your score to inspire others. Download your full report to track progress over time.</p>
         <div class="pledge-btns">
-          <button class="btn btn-primary" onclick="shareResult()" aria-label="Share your carbon footprint score">
+          <button class="btn btn-primary" id="share-btn" aria-label="Share your carbon footprint score">
             Share my score
           </button>
-          <button class="btn btn-ghost" onclick="downloadReport()" aria-label="Download your carbon footprint report as text file">
+          <button class="btn btn-ghost" id="download-btn" aria-label="Download your carbon footprint report as text file">
             Download report
           </button>
         </div>
@@ -1611,15 +1609,47 @@ function downloadReport() {
   }, 1000);
 }());
 
-/* ── Initialise range displays on DOMContentLoaded ── */
+/* ── Initialise all event listeners on DOMContentLoaded ── */
 document.addEventListener('DOMContentLoaded', () => {
-  rng('car_km',      'car_km_v',      'km / week');
-  rng('fl_short',    'fl_short_v',    'flights');
-  rng('fl_long',     'fl_long_v',     'flights');
-  rng('elec_kwh',    'elec_kwh_v',    'kWh');
-  rng('hh_size',     'hh_size_v',     'people');
-  rng('clothes',     'clothes_v',     'items');
-  rng('electronics', 'electronics_v', 'devices');
+  /* Range display updates */
+  const rangeMap = [
+    ['car_km',      'car_km_v',      'km / week'],
+    ['fl_short',    'fl_short_v',    'flights'],
+    ['fl_long',     'fl_long_v',     'flights'],
+    ['elec_kwh',    'elec_kwh_v',    'kWh'],
+    ['hh_size',     'hh_size_v',     'people'],
+    ['clothes',     'clothes_v',     'items'],
+    ['electronics', 'electronics_v', 'devices']
+  ];
+  rangeMap.forEach(([id, dispId, unit]) => {
+    const el = $(id);
+    if (el) {
+      el.addEventListener('input', () => rng(id, dispId, unit));
+      rng(id, dispId, unit); /* set initial display */
+    }
+  });
+
+  /* Step navigation buttons — no inline onclick */
+  const navMap = [
+    ['tab-transport',    () => goStep('transport')],
+    ['tab-energy',       () => goStep('energy')],
+    ['tab-food',         () => goStep('food')],
+    ['tab-shopping',     () => goStep('shopping')],
+    ['btn-next-energy',  () => goStep('energy')],
+    ['btn-back-transport', () => goStep('transport')],
+    ['btn-next-food',    () => goStep('food')],
+    ['btn-back-energy',  () => goStep('energy')],
+    ['btn-next-shopping', () => goStep('shopping')],
+    ['btn-back-food',    () => goStep('food')],
+    ['calc-btn',         () => calculate()],
+    ['regen-btn',        () => getAITips()],
+    ['share-btn',        () => shareResult()],
+    ['download-btn',     () => downloadReport()]
+  ];
+  navMap.forEach(([id, handler]) => {
+    const el = $(id);
+    if (el) el.addEventListener('click', handler);
+  });
 });
 </script>
 </body>
