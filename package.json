@@ -1,0 +1,21 @@
+{
+  "name": "ecotrace-carbon-footprint",
+  "version": "1.0.0",
+  "description": "EcoTrace — AI-powered personal carbon footprint calculator. Hack2Skill Prompts War · Google AI Challenge 2025.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tests/tests.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["carbon-footprint", "sustainability", "gemini-ai", "climate"],
+  "author": "Vinit Chaurasia",
+  "license": "MIT",
+  "dependencies": {
+    "compression": "^1.7.4",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
