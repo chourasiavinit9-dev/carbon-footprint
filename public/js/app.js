@@ -263,12 +263,16 @@ function calculate() {
     const sT = lib.calcShopping(inputs.clothes, inputs.electronics, inputs.recycling, inputs.secondhand);
     const total = lib.r2(tT + eT + fT + sT);
 
-    fp = { transport: tT, energy: eT, food: fT, shopping: sT, total, inputs };
+    fp = { transport: tT, energy: eT, food: fT, shopping: sT, total, inputs, date: new Date().toISOString() };
+
+    /* Save to history for tracking */
+    saveFootprintToHistory(fp);
 
     showResults(fp);
     renderEquivalences(fp);
     renderSmartPriority(fp);
     renderWhatIfSimulator(fp);
+    renderProgressTracker();
     getAITips();
 
     toast('Footprint calculated!');
@@ -1092,7 +1096,81 @@ function initLiveCounter() {
 }
 
 /* ══════════════════════════════════════════════
-   15. INIT
+   15. PROGRESS TRACKER
+   Saves footprint history to localStorage to
+   allow users to track reduction over time.
+══════════════════════════════════════════════ */
+
+const STORAGE_KEY = 'ecotrace_history';
+
+function getHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch (_) { return []; }
+}
+
+function saveFootprintToHistory(d) {
+  const history = getHistory();
+  /* Keep only the 10 most recent entries */
+  history.unshift(d);
+  if (history.length > 10) history.pop();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+}
+
+function clearHistory() {
+  if (!confirm('Are you sure you want to clear your footprint history?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  renderProgressTracker();
+  toast('History cleared.');
+}
+
+function renderProgressTracker() {
+  const history = getHistory();
+  const body = $('tracker-body');
+
+  if (history.length <= 1) {
+    body.innerHTML = `<p style="font-size:.85rem;color:var(--txt-3)">Calculate your footprint again in the future to see your progress here.</p>`;
+    return;
+  }
+
+  const lib = window.EcoTraceLib;
+  const current = history[0];
+  const previous = history[1];
+  const diff = lib.r2(current.total - previous.total);
+  const diffStr = diff > 0 ? `+${diff} t (Increased)` : diff < 0 ? `${diff} t (Decreased)` : 'No change';
+  const diffColor = diff > 0 ? 'var(--danger)' : diff < 0 ? 'var(--moss-lt)' : 'var(--txt-3)';
+
+  let html = `
+    <div style="background:rgba(52,168,83,0.06);border:1px solid var(--glass-border);border-radius:var(--r-md);padding:1rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+      <div>
+        <div style="font-size:.7rem;color:var(--txt-3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem">Latest Change</div>
+        <div style="font-size:.9rem;color:var(--txt-1)">Compared to previous calculation</div>
+      </div>
+      <div style="font-family:var(--ff-m);font-weight:600;color:${diffColor};background:rgba(255,255,255,0.05);padding:.4rem .8rem;border-radius:100px">${diffStr}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:.5rem">
+  `;
+
+  history.forEach((entry, idx) => {
+    const dateStr = new Date(entry.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    const isLatest = idx === 0;
+    html += `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--ink-3)">
+        <div>
+          <span style="font-family:var(--ff-m);font-weight:600;color:${isLatest ? 'var(--orange)' : 'var(--txt-2)'}">${entry.total} t</span>
+          ${isLatest ? `<span style="font-size:.65rem;color:var(--ink);background:var(--orange);padding:.1rem .4rem;border-radius:100px;margin-left:.4rem;font-weight:600">Latest</span>` : ''}
+        </div>
+        <div style="font-size:.75rem;color:var(--txt-3)">${dateStr}</div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  body.innerHTML = html;
+}
+
+/* ══════════════════════════════════════════════
+   16. INIT
 ══════════════════════════════════════════════ */
 
 (function init() {
@@ -1120,6 +1198,7 @@ function initLiveCounter() {
   /* Main calculate */
   $('calc-btn')?.addEventListener('click', calculate);
   $('regen-btn')?.addEventListener('click', getAITips);
+  $('clear-history-btn')?.addEventListener('click', clearHistory);
 
   /* Share / download */
   $('share-btn')?.addEventListener('click',    shareResult);

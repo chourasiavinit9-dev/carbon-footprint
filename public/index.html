@@ -24,7 +24,9 @@
 
   <!-- Calculation engine — must be available before app.js -->
   <script src="/lib/emissions.js" defer></script>
-  <!-- Main app — type=module for strict scoping -->
+  <!-- Analytics & decision engine — loaded before app.js -->
+  <script src="/lib/analytics.js" defer></script>
+  <!-- Main app controller -->
   <script src="/js/app.js" defer></script>
 </head>
 <body>
@@ -530,6 +532,21 @@
         <div class="res-card" aria-labelledby="equiv-title">
           <p class="res-card-title" id="equiv-title">What your footprint equals</p>
           <div class="equiv-grid" id="equiv-grid" aria-label="Impact equivalences"></div>
+        </div>
+
+        <!-- Progress Tracker — localStorage-based history -->
+        <div class="res-card" aria-labelledby="tracker-title" id="tracker-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--ink-3);flex-wrap:wrap">
+            <p class="res-card-title" id="tracker-title" style="margin:0;padding:0;border:none">
+              📈 Progress Tracker
+            </p>
+            <button class="btn btn-ghost btn-sm" id="clear-history-btn"
+              aria-label="Clear footprint history">
+              Clear history
+            </button>
+          </div>
+          <p class="res-card-sub">Your footprint over time — saved automatically in your browser</p>
+          <div id="tracker-body" aria-live="polite" aria-label="Footprint history"></div>
         </div>
 
         <!-- Smart Priority Engine -->
