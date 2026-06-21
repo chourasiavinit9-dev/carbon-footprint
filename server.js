@@ -60,13 +60,11 @@ app.use(compression({ level: 6, threshold: 1024 }));
 /* ═══════════════════════════════════════════
    STATIC FILES  /public
 ═══════════════════════════════════════════ */
-app.use(express.static(path.join(__dirname, 'public'), {
+// Serve static assets from public under the /public prefix
+app.use('/public', express.static(path.join(__dirname, 'public'), {
   maxAge: '1d',
   etag: true,
-  lastModified: true,
-  setHeaders(res, filePath) {
-    if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-cache');
-  }
+  lastModified: true
 }));
 
 /* ═══════════════════════════════════════════
@@ -244,7 +242,7 @@ Guidelines:
 ═══════════════════════════════════════════ */
 app.get('*', (req, res) => {
   res.setHeader('Cache-Control', 'no-cache');
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 /* ═══════════════════════════════════════════
